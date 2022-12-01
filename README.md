@@ -4,7 +4,7 @@ Done in [Golang](https://go.dev/).
 
 Day   | part 1 | part 2
 ------|--------|-------
-1     |  :heavy_check_mark:    |  :heavy_check_mark:
+[1](/day1/)     |  :heavy_check_mark:    |  :heavy_check_mark:
 2     |  :x:    |  :x:
 3     |  :x:    |  :x:
 4     |  :x:    |  :x:
