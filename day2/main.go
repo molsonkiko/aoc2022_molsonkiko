@@ -14,14 +14,14 @@ func main() {
 		panic(err)
 	}
 	lines := strings.Split(string(bytes), "\n")
-	max_calories, err := day2.Part1(lines)
+	part1_answer, err := day2.Part1(lines)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("Part 1 result: %d\n", max_calories)
-	top_three_total, err := day2.Part2(lines)
+	fmt.Printf("Part 1 result: %d\n", part1_answer)
+	part2_answer, err := day2.Part2(lines)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("Part 2 result: %d\n", top_three_total)
+	fmt.Printf("Part 2 result: %d\n", part2_answer)
 }
