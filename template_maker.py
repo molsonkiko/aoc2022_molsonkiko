@@ -8,6 +8,52 @@ def make_template_dir(day):
     os.mkdir(daydir)
     with open(daydir / f'day{day}_input.txt', 'w') as f:
         f.write('')
+
+    with open(daydir / f'day{day}.py', 'w') as f:
+        f.write(f'''import re
+import unittest
+
+def Part1(lines: list[str]):
+    return 0
+
+def Part2(lines: list[str]) -> int:
+    return 0
+
+class Part1Tests(unittest.TestCase):
+    def testPart1_sample_input(self):
+        inp = [
+            "",
+        ]
+        self.assertEqual(Part1(inp), 0)
+
+    def testPart1_another(self):
+        inp = [
+            "",
+        ]
+        self.assertEqual(Part1(inp), 0)
+
+
+class TestPart2(unittest.TestCase):
+    def testPart2_sample_input(self):
+        inp = [
+            "",
+        ]
+        self.assertEqual(Part2(inp), 0)
+
+    def testPart2_another(self):
+        inp = [
+            "",
+        ]
+        self.assertEqual(Part2(inp), 0)
+
+if __name__ == '__main__':
+    with open('day7_input.txt') as f:
+        lines = re.split('\\r?\\n', f.read())
+    part1_answer = Part1(lines)
+    print(f'part 1 answer = {{part1_answer}}')
+    part2_answer = Part2(lines)
+    print(f'part 2 answer = {{part2_answer}}')
+    unittest.main()''')
     
     with open(daydir / 'main.go', 'w') as f:
         f.write(f'''package main

@@ -10,7 +10,7 @@ Day   | part 1 | part 2
 [4](/day4/day4)     |  :heavy_check_mark:    |  :heavy_check_mark:
 [5](/day5/day5)     |  :heavy_check_mark:    |  :heavy_check_mark:
 [6](/day6/day6)     |  :heavy_check_mark:    |  :heavy_check_mark:
-7     |  :x:    |  :x:
+[7](/day7/day7)     |  :heavy_check_mark:    |  :heavy_check_mark:
 8     |  :x:    |  :x:
 9     |  :x:    |  :x:
 10    |  :x:    |  :x:
