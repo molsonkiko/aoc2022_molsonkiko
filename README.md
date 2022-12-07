@@ -1,6 +1,6 @@
 # Advent of Code 2022
 
-Done in [Golang](https://go.dev/).
+Done in [Golang](https://go.dev/) (and Python when Golang pisses me off and I just want to get the answer)
 
 Day   | part 1 | part 2
 ------|--------|-------

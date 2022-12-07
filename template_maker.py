@@ -19,12 +19,15 @@ def Part1(lines: list[str]):
 def Part2(lines: list[str]) -> int:
     return 0
 
+
+SAMPLE_INPUT = [
+    ""
+]
+
+
 class Part1Tests(unittest.TestCase):
     def testPart1_sample_input(self):
-        inp = [
-            "",
-        ]
-        self.assertEqual(Part1(inp), 0)
+        self.assertEqual(Part1(SAMPLE_INPUT), 0)
 
     def testPart1_another(self):
         inp = [
@@ -35,10 +38,7 @@ class Part1Tests(unittest.TestCase):
 
 class TestPart2(unittest.TestCase):
     def testPart2_sample_input(self):
-        inp = [
-            "",
-        ]
-        self.assertEqual(Part2(inp), 0)
+        self.assertEqual(Part2(SAMPLE_INPUT), 0)
 
     def testPart2_another(self):
         inp = [
@@ -47,7 +47,7 @@ class TestPart2(unittest.TestCase):
         self.assertEqual(Part2(inp), 0)
 
 if __name__ == '__main__':
-    with open('day7_input.txt') as f:
+    with open('day{day}_input.txt') as f:
         lines = re.split('\\r?\\n', f.read())
     part1_answer = Part1(lines)
     print(f'part 1 answer = {{part1_answer}}')
@@ -115,13 +115,17 @@ func testValueExpected(t *testing.T, result int, err error, expected_result int)
 }}
 
 type InputAnswer struct {{
-	input []string;
-	answer int;
-}};
+	input []string
+	answer int
+}}
+
+var sampleInput = []string{{
+    "",
+}}
 
 func TestPart1_SampleInputs(t *testing.T) {{
 	inputanswers := []InputAnswer{{
-		{{[]string{{""}}, 0 }},
+		{{sampleInput, 0 }},
 	}}
 	for _, inputanswer := range inputanswers {{
 		result, err := Part1(inputanswer.input)
@@ -131,7 +135,7 @@ func TestPart1_SampleInputs(t *testing.T) {{
 
 func TestPart2_SampleInput(t *testing.T) {{
 	inputanswers := []InputAnswer{{
-		{{[]string{{""}}, 0}},
+		{{sampleInput, 0}},
 	}}
 	for _, inputanswer := range inputanswers {{
 		result, err := Part2(inputanswer.input)
