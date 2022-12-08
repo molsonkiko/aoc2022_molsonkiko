@@ -7,7 +7,7 @@ def make_template_dir(day):
     daydir = ROOT / f'day{day}'
     os.mkdir(daydir)
     with open(daydir / f'day{day}_input.txt', 'w') as f:
-        f.write('')
+        f.write('1\r\n2')
 
     with open(daydir / f'day{day}.py', 'w') as f:
         f.write(f'''import re
@@ -29,22 +29,11 @@ class Part1Tests(unittest.TestCase):
     def testPart1_sample_input(self):
         self.assertEqual(Part1(SAMPLE_INPUT), 0)
 
-    def testPart1_another(self):
-        inp = [
-            "",
-        ]
-        self.assertEqual(Part1(inp), 0)
-
 
 class TestPart2(unittest.TestCase):
     def testPart2_sample_input(self):
         self.assertEqual(Part2(SAMPLE_INPUT), 0)
 
-    def testPart2_another(self):
-        inp = [
-            "",
-        ]
-        self.assertEqual(Part2(inp), 0)
 
 if __name__ == '__main__':
     with open('day{day}_input.txt') as f:
@@ -61,7 +50,7 @@ if __name__ == '__main__':
 import (
 	"fmt"
 	"os"
-	"strings"
+	"regexp"
 
 	"aoc2022/day{day}/day{day}"
 )
@@ -71,7 +60,8 @@ func main() {{
 	if err != nil {{
 		panic(err)
 	}}
-	lines := strings.Split(string(bytes), "\\n")
+    newline, _ := regexp.Compile(`\\r?\\n`)
+	lines := newline.Split(string(bytes), -1)
 	part1_answer, err := day{day}.Part1(lines)
 	if err != nil {{
 		panic(err)
