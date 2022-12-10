@@ -13,7 +13,7 @@ Day   | part 1 | part 2
 [7](/day7/day7)     |  :heavy_check_mark:    |  :heavy_check_mark:
 [8](/day8/day8)     |  :heavy_check_mark:    |  :heavy_check_mark:
 9     |  :x:    |  :x:
-10    |  :x:    |  :x:
+[10](/day10/day10)     |  :heavy_check_mark:    |  :heavy_check_mark: *(part 1 only in Python, part 2 only in Go)*
 11    |  :x:    |  :x:
 12    |  :x:    |  :x:
 13    |  :x:    |  :x:
