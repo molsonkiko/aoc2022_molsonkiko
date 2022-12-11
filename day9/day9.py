@@ -47,10 +47,10 @@ SAMPLE_INPUT = [
 
 
 class Part1Tests(unittest.TestCase):
-    def testPart1_sample_input(self):
+    def test_sample_input(self):
         self.assertEqual(Part1(SAMPLE_INPUT), 13)
 
-    def testPart1_radius1_circle_around_start(self):
+    def test_radius1_circle_around_start(self):
         '''
         H H H
         H T H
@@ -67,7 +67,7 @@ class Part1Tests(unittest.TestCase):
         ]
         self.assertEqual(Part1(inp), 1)
 
-    def testPart2_radius2_circle_around_start(self):
+    def test_radius2_circle_around_start(self):
         '''
         H T T T H
         T # # # T
@@ -85,7 +85,7 @@ class Part1Tests(unittest.TestCase):
         ]
         self.assertEqual(Part1(inp), 13)
 
-    def testPart2_radius2_circle_around_start_then_back_to_start(self):
+    def test_radius2_circle_around_start_then_back_to_start(self):
         '''
         H T T T H
         T # # # T
@@ -108,6 +108,24 @@ class Part1Tests(unittest.TestCase):
             'L 2', # back to start
         ]
         self.assertEqual(Part1(inp), 13)
+
+    def test_horizontal_lines(self):
+        inp = ['R 5', 'L 5', 'R 5', 'L 5']
+        self.assertEqual(Part1(inp), 5)
+
+    def test_vertical_lines(self):
+        inp = ['U 5', 'D 5', 'U 5', 'D 5']
+        self.assertEqual(Part1(inp), 5)
+
+    def test_diagonal_up_and_right(self):
+        '''
+        ##HH
+        #HT#
+        HT##
+        T###
+        '''
+        inp = ['U 1', 'R 1', 'U 1', 'R 1', 'U 1', 'R 1']
+        self.assertEqual(Part1(inp), 3)
 
 
 class TestPart2(unittest.TestCase):

@@ -10,11 +10,11 @@ Day   | part 1 | part 2
 [4](/day4/day4)     |  :heavy_check_mark:    |  :heavy_check_mark:
 [5](/day5/day5)     |  :heavy_check_mark:    |  :heavy_check_mark:
 [6](/day6/day6)     |  :heavy_check_mark:    |  :heavy_check_mark:
-[7](/day7/day7)     |  :heavy_check_mark:    |  :heavy_check_mark:
-[8](/day8/day8)     |  :heavy_check_mark:    |  :heavy_check_mark:
+[7](/day7)     |  :heavy_check_mark:    |  :heavy_check_mark:
+[8](/day8)     |  :heavy_check_mark:    |  :heavy_check_mark:
 9     |  :x:    |  :x:
-[10](/day10/day10)     |  :heavy_check_mark:    |  :heavy_check_mark: *(part 1 only in Python, part 2 only in Go)*
-11    |  :x:    |  :x:
+[10](/day10)     |  :heavy_check_mark:    |  :heavy_check_mark: *(part 1 only in Python, part 2 only in Go)*
+[11](/day11)    |  :heavy_check_mark:    |  :heavy_check_mark:
 12    |  :x:    |  :x:
 13    |  :x:    |  :x:
 14    |  :x:    |  :x:
