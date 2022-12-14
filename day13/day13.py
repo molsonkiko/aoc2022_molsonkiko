@@ -38,11 +38,17 @@ def parse_list(list_str: str) -> intarr:
         ii += 1
     return out
 
-def right_gt_left(left, right):
+def right_gt_left(left, right, verbose=False) -> int:
+    '''return 1 if right > left, -1 if left < right, 0 if equal'''
     ii = 0
-    print('==============')
-    print(f'{left = }')
-    print(f'{right = }')
+    if verbose:
+        print('==============')
+        print(f'{left = }')
+        print(f'{right = }')
+    if isinstance(left, int):
+        left = [left]
+    if isinstance(right, int):
+        right = [right]
     while ii < len(left) and ii < len(right):
         v1, v2 = left[ii], right[ii]
         ii += 1
@@ -61,38 +67,65 @@ def right_gt_left(left, right):
         if isinstance(v1, list):
             if isinstance(v2, list):
                 # nested empty lists are compared by nesting depth
-                if len(v1) == 0 and len(v2) == 0 and v1_depth > v2_depth:
-                    print(f'{left[ii -1 ] = }, {right[ii - 1] = }, left wins b/c deeper')
-                    return False # left greater than right is bad
+                if len(v1) == 0 and len(v2) == 0:
+                    if v1_depth > v2_depth:
+                        if verbose:
+                            print(f'{left[ii -1 ] = }, {right[ii - 1] = }, left wins b/c deeper')
+                        return -1
+                    if v1_depth < v2_depth:
+                        if verbose:
+                            print(f'{left[ii -1 ] = }, {right[ii - 1] = }, right wins b/c deeper')
+                        return 1
+                    if verbose:
+                        print(f'{left[ii -1 ] = }, {right[ii - 1] = }, tie b/c equal depth')
+                    return 0
                 else:
-                    if not right_gt_left(v1, v2):
-                        return False
-            # else: pass
-            # int on right, empty list on left
-            # right should be greater, so this is fine
+                    result = right_gt_left(v1, v2, verbose)
+                    if result != 0:
+                        return result
+            else:
+                result = right_gt_left(v1, v2, verbose)
+                if result != 0:
+                    return result
         elif isinstance(v2, list):
             # empty list on right, number on left
             # number is greater, so this is bad
-            print(f'{left[ii - 1] = }, {right[ii - 1] = }, left wins b/c it is number and right is empty list')
-            if not right_gt_left([v1], v2):
-                return False
+            result = right_gt_left(v1, v2, verbose)
+            if result != 0:
+                return result
         elif v1 > v2:
-            print(f'{left[ii - 1] = }, {right[ii - 1] = }, left wins because it is larger number')
-            return False # right side should be greater
-    if ii == len(left):
-        print(f'{len(left) = }, {len(right) = }, right wins b/c longer')
-        return True # if left is exhausted, that's good
-    print(f'{len(left) = }, {len(right) = }, left wins b/c longer')
-    return False # if right is exhausted, that's bad
+            if verbose:
+                print(f'{left[ii - 1] = }, {right[ii - 1] = }, left wins because it is larger number')
+            return -1 # right side should be greater
+        elif v2 > v1:
+            if verbose:
+                print(f'{left[ii - 1] = }, {right[ii - 1] = }, right wins because it is larger number')
+            return 1
+    if ii == len(left) and ii < len(right):
+        if verbose:
+            print(f'{len(left) = }, {len(right) = }, right wins b/c longer')
+        return 1 # if left is exhausted, that's good
+    elif ii == len(right) and ii < len(left):
+        if verbose:
+            print(f'{len(left) = }, {len(right) = }, left wins b/c longer')
+        return -1 # if right is exhausted, that's bad
+    # both are elementwise equal
+    if verbose:
+        print(f'{len(left) = }, {len(right) = }, both same')
+    return 0
 
 
-def Part1(lines: list[str]):
+def Part1(lines: list[str], verbose=False):
     pair = []
     correctly_ordered_pairs = 0
+    pair_number = 0
     for ii, line in enumerate(lines):
         if not line:
-            if right_gt_left(*pair):
-                correctly_ordered_pairs += ii + 1
+            pair_number += 1
+            if verbose:
+                print(f'Pair {pair_number}')
+            if right_gt_left(*pair, verbose) == 1:
+                correctly_ordered_pairs += pair_number
             pair = []
             continue
         pair.append(parse_list(line))
@@ -144,7 +177,7 @@ class ParseListTests(unittest.TestCase):
 
 class Part1Tests(unittest.TestCase):
     def testPart1_sample_input(self):
-        self.assertEqual(Part1(SAMPLE_INPUT), 13)
+        self.assertEqual(Part1(SAMPLE_INPUT, False), 13)
 
 
 class TestPart2(unittest.TestCase):
@@ -155,7 +188,7 @@ class TestPart2(unittest.TestCase):
 if __name__ == '__main__':
     with open('day13_input.txt') as f:
         lines = re.split('\r?\n', f.read())
-    part1_answer = Part1(lines)
+    part1_answer = Part1(lines) # 5969 is too low
     print(f'part 1 answer = {part1_answer}')
     part2_answer = Part2(lines)
     print(f'part 2 answer = {part2_answer}')
