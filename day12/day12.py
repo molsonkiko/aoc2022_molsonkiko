@@ -1,4 +1,5 @@
 from collections import deque
+import heapq
 import re
 import unittest
 import colorama
@@ -31,11 +32,12 @@ def manhattan_distance(loc, end):
     return abs(end[0] - loc[0]) + abs(end[1] - loc[1])
 
 
-def render_path(grid: list[list[int]], backtrace: tuple[tuple[int]]) -> str:
-    text = ''
+def render_path(grid: list[list[int]], backtrace: tuple[tuple[int]], visited: set[tuple[int]]) -> str:
+    text = '\n'
     lenback = len(backtrace)
     setback = set(backtrace)
     colors = [Fore.RED, Fore.LIGHTMAGENTA_EX, Fore.BLUE, Fore.CYAN, Fore.GREEN]
+    cur_color = ''
     for ii in range(len(grid)):
         row = ''
         for jj in range(len(grid[0])):
@@ -49,10 +51,20 @@ def render_path(grid: list[list[int]], backtrace: tuple[tuple[int]]) -> str:
             if (ii, jj) in setback:
                 idx = backtrace.index((ii, jj))
                 color = colors[int(idx * 5 / lenback)]
-                row += color + elt + Fore.RESET
+                if cur_color != color:
+                    cur_color = color
+                    row += Fore.RESET + color
+            elif (ii, jj) in visited:
+                if cur_color != Fore.LIGHTYELLOW_EX:
+                    cur_color = Fore.LIGHTYELLOW_EX
+                    row += Fore.RESET + Fore.LIGHTYELLOW_EX
             else:
-                row += elt
-        text += row + '\n'
+                if cur_color != '':
+                    cur_color = ''
+                    row += Fore.RESET
+            row += elt
+        text += row + Fore.RESET + '\n'
+        cur_color = ''
     return text
 
 
@@ -62,32 +74,57 @@ def Part1(lines: list[str], show_path = True, verbose=False) -> int:
     if verbose:
         for row in grid:
             print(row)
-    next_locs = deque([((), start)])
-    visited = set()
+    # in the A* algorithm, the distance to start is also known as
+    # the g-score
+    distances_to_start = {start: 0}
+    # in the A* algorithm, the estimated distance from a node to the end
+    # plus the distance to start is also known as the f-score
+    def cost_func(loc):
+        '''penalize distance from end, reward climbing higher'''
+        return manhattan_distance(loc, end) - grid[loc[0]][loc[1]]
+    next_locs = [(cost_func(start), start)]
+    came_from = {} # allows a backtrace to the start
     enqueued = {start}
-    while True:
-        backtrace, loc = next_locs.popleft()
-        visited.add(loc)
-        enqueued.remove(loc)
+    visited = {start: 1} # not required for algorithm, but useful for visualization
+    while next_locs:
+        f_score, loc = heapq.heappop(next_locs)
         if loc == end:
             break
+        enqueued.remove(loc)
+        visited.setdefault(loc, 0)
+        visited[loc] += 1
+        dist_to_start = distances_to_start[loc]
         ii, jj = loc
         val = grid[ii][jj]
         if verbose:
-            print((f'{ii = }, {jj = }, {val = }, dist = {manhattan_distance(loc, end)}, '
-                  f'{len(visited) = } {len(next_locs) = }, {len(backtrace) = }'))
+            print((f'{ii = }, {jj = }, {val = }, '
+                   f'{dist_to_start = }, {f_score = }, {len(next_locs) = }'))
         for next_ii, next_jj in {(ii - 1, jj), (ii + 1, jj), 
                                  (ii, jj - 1), (ii, jj + 1)}:
             next_loc = (next_ii, next_jj)
             if (0 <= next_ii <= imax) and (0 <= next_jj <= jmax) \
-            and grid[next_ii][next_jj] <= val + 1 \
-            and next_loc not in visited \
-            and next_loc not in enqueued:
-                next_locs.append((backtrace + (loc,), next_loc))
-                enqueued.add(next_loc)
+            and grid[next_ii][next_jj] <= val + 1:
+                # gscore of current + d(current, neighbor)
+                tentative_start_dist = dist_to_start + 1
+                old_start_dist = distances_to_start.get(next_loc)
+                # update distance to start and f score of next_loc if the newly found
+                # distance is less than the previous estimate
+                if (not old_start_dist) or tentative_start_dist < old_start_dist:
+                    distances_to_start[next_loc] = tentative_start_dist
+                    came_from[next_loc] = loc
+                    f_score_next = tentative_start_dist + cost_func(next_loc)
+                    if next_loc not in enqueued:
+                        enqueued.add(next_loc)
+                        heapq.heappush(next_locs, (f_score_next, next_loc))
+    prev = end
+    backtrace = [end]
+    while prev != start:
+        prev = came_from[prev]
+        backtrace.append(prev)
     if show_path or verbose:
-        print(render_path(grid, backtrace + (end,)))
-    return len(backtrace)
+        print(render_path(grid, backtrace[::-1], visited))
+        print(f'locations visited: {sum(visited.values())}')
+    return len(backtrace) - 1
 
 def Part2(lines: list[str], show_path = True, verbose = False) -> int:
     '''shortest path from end to the lowest elevation'''
@@ -118,7 +155,7 @@ def Part2(lines: list[str], show_path = True, verbose = False) -> int:
                 next_locs.append((backtrace + (loc,), next_loc))
                 enqueued.add(next_loc)
     if show_path or verbose:
-        print(render_path(grid, backtrace + (loc,)))
+        print(render_path(grid, backtrace + (loc,), visited))
     return len(backtrace)
 
 
@@ -193,7 +230,7 @@ class TestPart2(unittest.TestCase):
 if __name__ == '__main__':
     with open('day12_input.txt') as f:
         lines = re.split('\r?\n', f.read())
-    part1_answer = Part1(lines)
+    part1_answer = Part1(lines, True, False)
     print(f'part 1 answer = {part1_answer}')
     part2_answer = Part2(lines)
     print(f'part 2 answer = {part2_answer}')
