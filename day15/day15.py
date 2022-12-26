@@ -453,7 +453,7 @@ ys2 .......s 0
         # self.slope = a / b
         # other.slope = q / r
         # c / a = self.x_intercept = -self.y1 / self.slope
-        #         
+
 
     def overlap_area(self, other: Shape):
         return super().overlap_area(other)
@@ -477,13 +477,29 @@ def manhattan_distance(x1: int, y1: int, x2: int, y2: int) -> int:
     return abs(x2 - x1) + abs(y2 - y1)
 
 def sensor_coverage(sensors: list[tuple[int]], 
-        beacons: list[tuple[int]]) -> list[Diamond]:
+        beacons: list[tuple[int]]):
     out = []
+    xmax = -float('inf')
+    xmin = float('inf')
+    ymax  = -float('inf')
+    ymin = float('inf')
     for (sx, sy), (bx, by) in zip(sensors, beacons):
-        dist = manhattan_distance(sx, sy, bx, by)
-        coverage = Diamond(sx, sy, dist)
+        radius = manhattan_distance(sx, sy, bx, by)
+        coverage = Diamond(sx, sy, radius)
+        coverage_xmin = sx - radius
+        coverage_xmax = sx + radius
+        coverage_ymin = sy - radius
+        coverage_ymax = sy + radius
+        if coverage_xmin < xmin:
+            xmin = coverage_xmin
+        if coverage_xmax > xmax:
+            xmax = coverage_xmax
+        if coverage_ymin < ymin:
+            ymin = coverage_ymin
+        if coverage_ymax > ymax:
+            ymax = coverage_ymax
         out.append(coverage)
-    return out
+    return out, xmin, xmax, ymin, ymax
 
 def total_coverage_area(coverages: list[Diamond]) -> int:
     '''
@@ -528,8 +544,20 @@ def total_coverage_area(coverages: list[Diamond]) -> int:
             tot_cov_area -= cov1.overlap_area(coverages[jj])
         
 
-def Part1(lines: list[str]):
-    coverages = sensor_coverage(*parse_lines(lines))
+def Part1(lines: list[str], y_value: int) -> int:
+    '''find the number of places on the horizontal line at y = y_value
+    that the unfound beacon CANNOT be
+    (based on the sensor coverage of that line)'''
+    coverages, xmin, xmax, _, _ = sensor_coverage(*parse_lines(lines))
+    seg = LineSegment(xmin, y_value, xmax, y_value)
+    total_coverage_area = 0
+    for ii, cov in enumerate(coverages):
+        total_coverage_area += seg.overlap_area(cov)
+        for jj in range(ii + 1, len(coverages)):
+            two_covs_overlap = cov.overlap(coverages[jj])
+            for overlap_part in two_covs_overlap:
+                total_coverage_area -= seg.overlap_area(overlap_part)
+    return total_coverage_area
 
 
 def Part2(lines: list[str]) -> int:
@@ -556,7 +584,7 @@ SAMPLE_INPUT = [
 
 class Part1Tests(unittest.TestCase):
     def testPart1_sample_input(self):
-        self.assertEqual(Part1(SAMPLE_INPUT), 0)
+        self.assertEqual(Part1(SAMPLE_INPUT, 10), 26)
 
 
 class TestPart2(unittest.TestCase):
@@ -567,7 +595,7 @@ class TestPart2(unittest.TestCase):
 if __name__ == '__main__':
     with open('day15_input.txt') as f:
         lines = re.split('\r?\n', f.read())
-    part1_answer = Part1(lines)
+    part1_answer = Part1(lines, 2_000_000)
     print(f'part 1 answer = {part1_answer}')
     part2_answer = Part2(lines)
     print(f'part 2 answer = {part2_answer}')

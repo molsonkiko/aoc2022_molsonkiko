@@ -28,4 +28,4 @@ Day   | part 1 | part 2
 22    |  :x:    |  :x:
 23    |  :x:    |  :x:
 24    |  :x:    |  :x:
-25    |  :x:    |  :x:
+[25](/day25)    |  :heavy_check_mark:    |  :x:
